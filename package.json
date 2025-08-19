@@ -1,16 +1,18 @@
 {
   "name": "mywhatsappbot",
   "version": "1.0.0",
-  "description": "Multi-User WhatsApp Bot",
+  "description": "Multi-user WhatsApp Bot with Baileys",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node index.js"
   },
+  "author": "Gesandu",
+  "license": "MIT",
   "dependencies": {
-    "@adiwajshing/baileys": "^4.6.0",
-    "axios": "^1.5.0",
-    "moment": "^2.30.0",
+    "@adiwajshing/baileys": "^5.0.7",
+    "axios": "^1.7.2",
+    "moment": "^2.29.4",
     "qrcode-terminal": "^0.12.0"
   }
 }
