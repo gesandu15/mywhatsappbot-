@@ -1,99 +1,18 @@
-import makeWASocket, { useMultiFileAuthState, DisconnectReason } from "@adiwajshing/baileys";
-import qrcode from "qrcode-terminal";
-import axios from "axios";
-import moment from "moment";
-
-// Bot configs
-const BOT_NAME = "M.R.Gesa";
-const OWNER_CONTACT = "94784525290";
-const BOT_PHOTO = "https://github.com/gesandu1111/ugjv/blob/main/WhatsApp%20Image%202025-08-14%20at%2020.56.15_d6d69dfa.jpg?raw=true";
-
-async function startBot() {
-  const { state, saveCreds } = await useMultiFileAuthState("auth_info");
-
-  const sock = makeWASocket({
-    auth: state,
-    printQRInTerminal: true,
-  });
-
-  sock.ev.on("connection.update", (update) => {
-    const { connection, lastDisconnect, qr } = update;
-    if (qr) qrcode.generate(qr, { small: true });
-
-    if (connection === "close") {
-      const reason = lastDisconnect?.error?.output?.statusCode;
-      if (reason !== DisconnectReason.loggedOut) startBot();
-      else console.log("Logged out. Delete auth_info folder to restart.");
-    } else if (connection === "open") {
-      console.log("✅ Bot Connected!");
-    }
-  });
-
-  sock.ev.on("creds.update", saveCreds);
-
-  sock.ev.on("messages.upsert", async (msg) => {
-    const m = msg.messages[0];
-    if (!m.message) return;
-
-    const from = m.key.remoteJid;
-    const text = m.message.conversation || m.message.extendedTextMessage?.text;
-    const command = text?.toLowerCase();
-
-    console.log("📩 From:", from, "->", text);
-
-    if (command === "hi") await sock.sendMessage(from, { text: `Hello 👋 I'm ${BOT_NAME}!` });
-    else if (command === "menu") await sock.sendMessage(from, { text: `
-╭─「 ⚙ Download 」
-│ ⚡ .gdrive
-│ ⚡ .download <direct_url>
-│ ⚡ .facebook
-│ ⚡ .instagram
-│ ⚡ .tiktok
-│ ⚡ .tiktoksearch <query>
-│ ⚡ .ytmp3 <youtube_url>
-│ ⚡ .ytmp4 <youtube_url>
-╰─────────────
-╭─「 🎨 Edit 」
-│ ⚡ .filter
-│ ⚡ .resize
-╰─────────────
-╭─「 ⚙ Group 」
-│ ⚡ .antibot
-│ ⚡ .antilink
-│ ⚡ .grouplink
-│ ⚡ .groupmute
-│ ⚡ .groupunmute
-│ ⚡ .kick
-│ ⚡ .setgcpp
-│ ⚡ .setgroupdesc
-│ ⚡ .tagall
-╰─────────────
-╭─「 🏠 Main 」
-│ ⚡ .creator
-│ ⚡ .owner
-╰─────────────
-╭─「 🔍 Search 」
-│ ⚡ .anime
-│ ⚡ .hentai
-│ ⚡ .yt <search query>
-╰─────────────
-╭─「 🔧 Tools 」
-│ ⚡ .channeljid
-│ ⚡ .jid
-│ ⚡ .link
-│ ⚡ .msgid
-│ ⚡ .pp
-╰─────────────
-╭─「 🛠 Utility 」
-│ ⚡ .forward
-│ ⚡ .ipinfo
-│ ⚡ .vv
-╰─────────────
-    `});
-    else if (command === "about") await sock.sendMessage(from, { text: `🤖 ${BOT_NAME} - Multi-User WhatsApp Bot powered by Baileys.` });
-    else if (command === "owner") await sock.sendMessage(from, { text: `👨‍💻 Owner: wa.me/${OWNER_CONTACT}` });
-    else if (command === "time") await sock.sendMessage(from, { text: `⏰ Current Time: ${moment().format("YYYY-MM-DD HH:mm:ss")}` });
-  });
+{
+  "name": "mywhatsappbot",
+  "version": "1.0.0",
+  "description": "Multi-user WhatsApp Bot with Baileys",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Gesandu",
+  "license": "MIT",
+  "dependencies": {
+    "@adiwajshing/baileys": "^5.0.7",
+    "axios": "^1.7.2",
+    "moment": "^2.29.4",
+    "qrcode-terminal": "^0.12.0"
+  }
 }
-
-startBot();
